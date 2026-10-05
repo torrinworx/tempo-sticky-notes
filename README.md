@@ -1,52 +1,29 @@
 # Sticky Notes
 
-A single-page sticky notes app built with React and TypeScript for the Tempo front-end take-home.
+A sticky notes board in React and TypeScript, built for Tempo's front-end take-home. Drag on the board to draw a note at any size and position. Move a note by its header, resize it from the corner, and delete it by dropping it on the trash. Notes also hold text and get a random pastel colour.
 
-## Features
-
-Required (at least 3 of 4):
-
-- [x] Create a note of a given size at a given position
-- [x] Resize a note by dragging
-- [x] Move a note by dragging
-- [x] Delete a note by dragging it onto the trash zone
-
-Optional:
-
-- [x] Enter and edit note text
-- [ ] Bring a note to the front when notes overlap
-- [ ] Save notes to local storage and restore them on page load
-- [x] Note colors (random pastel, never the same as the previous note)
-- [ ] Save notes to a mocked, asynchronous REST API
-
-## Running locally
+## Running it
 
 Requires Node.js 20.19+ or 22.12+.
 
 ```sh
 npm install
-npm run dev        # dev server at http://localhost:5173
-npm run build      # type-check and build to dist/
-npm run preview    # serve the built app
-npm run lint       # ESLint with type-aware rules
-npm run typecheck  # TypeScript only
-npm test           # unit tests (Vitest)
+npm run dev    # http://localhost:5173
+npm test
 ```
 
-Supported browsers: latest Chrome (Windows and Mac), Firefox, and Edge, on desktop at 1024x768 or larger.
+## Approach and architecture
 
-## Architecture
+All notes live in one array, and a reducer is the only code that changes it. Each change returns a new object only for the note it touched, so memoized note components skip re-rendering. The types are strict throughout. Note ids are branded, actions are discriminated unions, and the colour palette is keyed by a union type, so a missing case fails to compile.
 
-TODO: 2 to 3 paragraphs.
+Pointer input goes through one hook, `useBoardInteraction`, which runs one gesture at a time. While you drag, the notes stay unchanged. The hook computes a preview with pure geometry functions and saves the change once, when you let go. Clicking a header or corner without dragging picks the note up instead, and it follows the pointer until the next click. That gives every drag a non-drag alternative, which WCAG 2.2 requires.
 
-## Approach
-
-TODO
+`NotesBoard` connects the state, the gestures, keyboard focus and screen reader announcements, and `NoteCard` renders one note. Every note has labelled buttons. The arrow keys move or resize a note, Delete removes it, and a live region announces each change.
 
 ## Assumptions
 
-TODO
+The app targets desktop screens at 1024x768 or larger. Notes live in memory, so reloading clears the board. A note comes to the front only while it's being dragged. I tested in the latest Chrome and Firefox. Edge uses Chrome's engine, so I didn't test it separately.
 
 ## How I used AI tools
 
-TODO
+I built this with Claude Code, which Tempo confirmed was fine. I set the scope and the bar: the features, keyboard and WCAG 2.2 AA support, and strict typing. Claude Code wrote the code and tests. I reviewed the UX, how the interface behaves, and the look and feel, and checked that everything works as expected and as I specified.
