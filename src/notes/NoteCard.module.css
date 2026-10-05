@@ -1,0 +1,123 @@
+.note {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--note-border);
+  border-radius: 6px;
+  background: var(--note-background);
+  color: var(--note-ink);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.12),
+    0 6px 16px rgb(0 0 0 / 0.08);
+}
+
+/* Marks the note being worked on; it is also the text field's focus indicator. */
+.note:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+/* The note being dragged paints above the rest without changing the saved order. */
+.note[data-state='active'],
+.note[data-state='deleting'] {
+  z-index: 1;
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 0.14),
+    0 16px 32px rgb(0 0 0 / 0.16);
+}
+
+.note[data-state='deleting'] {
+  opacity: 0.6;
+  outline: 2px dashed var(--color-danger);
+  outline-offset: 2px;
+}
+
+.header {
+  display: flex;
+  height: 32px;
+  border-bottom: 1px solid var(--note-border);
+  border-radius: 5px 5px 0 0;
+  background: var(--note-header);
+}
+
+.moveHandle,
+.deleteButton,
+.resizeHandle {
+  display: flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  touch-action: none;
+}
+
+.moveHandle {
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+  padding: 0 8px;
+  border-radius: 5px 0 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: grab;
+}
+
+.deleteButton {
+  justify-content: center;
+  width: 32px;
+  border-radius: 0 5px 0 0;
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  background: rgb(0 0 0 / 0.08);
+  color: var(--color-danger);
+}
+
+.text {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  /* Bottom padding keeps text clear of the resize handle. */
+  padding: 8px 10px 24px;
+  border: 0;
+  border-radius: 0 0 5px 5px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+  resize: none;
+  scrollbar-width: thin;
+  user-select: text;
+}
+
+.text:focus-visible {
+  outline: none;
+}
+
+.text::placeholder {
+  color: var(--note-placeholder);
+  opacity: 1;
+}
+
+/* Paints over scrolled text, so the grip stays readable. */
+.resizeHandle {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px 0 5px 0;
+  background: var(--note-background);
+  cursor: nwse-resize;
+}
+
+.moveHandle:focus-visible,
+.deleteButton:focus-visible,
+.resizeHandle:focus-visible {
+  outline-offset: -3px;
+}
